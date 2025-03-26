@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Diet Recommendation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .result-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .result-container h1 {
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .result-container h2 {
+            color: #28a745;
+            text-align: center;
+        }
+        .result-container p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+        .result-container a {
+            display: block;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .result-container a:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <h1>Your Diet Recommendation</h1>
+        <h2>Daily Caloric Intake: {{ calories|round(2) }} kcal</h2>
+        <p><strong>Breakfast:</strong> {{ breakfast }}</p>
+        <p><strong>Lunch:</strong> {{ lunch }}</p>
+        <p><strong>Dinner:</strong> {{ dinner }}</p>
+        <p><strong>Snacks:</strong> {{ snacks }}</p>
+        <a href="/">Back to Home</a>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

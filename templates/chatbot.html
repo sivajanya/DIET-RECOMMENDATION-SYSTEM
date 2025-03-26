@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Assistant</title>
+    <style>
+        body {
+            background-image: url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1635&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .chat-container {
+            width: 90%;
+            max-width: 500px;
+            height: 80vh;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-header {
+            padding: 25px 20px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-header h2 {
+            color: #4CAF50;
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .chat-header p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 10px 0 0;
+            font-size: 1.1rem;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: transparent;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            max-width: 80%;
+            line-height: 1.4;
+            position: relative;
+            color: #fff;
+            backdrop-filter: blur(2px);
+        }
+        
+        .user-message {
+            background: rgba(255, 255, 255, 0.15);
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .bot-message {
+            background: rgba(255, 255, 255, 0.15);
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .bot-message b {
+            color: #4CAF50;
+        }
+        
+        .input-area {
+            display: flex;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #user-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        #user-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        #send-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 0 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        #send-button:hover {
+            background: #45a049;
+            transform: scale(1.02);
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+            padding-left: 5px;
+        }
+        
+        .typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            margin-right: 3px;
+            opacity: 0.4;
+        }
+        
+        .typing-indicator span:nth-child(1) {
+            animation: typing 1s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation: typing 1s infinite 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation: typing 1s infinite 0.4s;
+        }
+        
+        @keyframes typing {
+            0% { opacity: 0.4; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-3px); }
+            100% { opacity: 0.4; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Diet ASSISTANT</h2>
+            <p>Your personalized meal planning guide</p>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will appear here -->
+        </div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="if(event.key === 'Enter') sendMessage();">
+            <button id="send-button" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        let isWaitingForResponse = false;
+        
+        // Initialize conversation
+        window.onload = function() {
+            startConversation();
+        };
+        
+        function startConversation() {
+            isWaitingForResponse = true;
+            fetch('/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'  // Crucial for session cookies
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    addMessage(data.response, 'bot');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessage("Welcome to Diet Assistant! What is your age?", 'bot');
+            })
+            .finally(() => {
+                isWaitingForResponse = false;
+            });
+        }
+        
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '' || isWaitingForResponse) return;
+            
+            isWaitingForResponse = true;
+            addMessage(message, 'user');
+            userInput.value = '';
+            
+            // Show typing indicator
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'message bot-message';
+            typingIndicator.innerHTML = '<span class="typing-indicator"><span></span><span></span><span></span></span>';
+            chatMessages.appendChild(typingIndicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message }),
+                credentials: 'include'  // Crucial for session cookies
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                chatMessages.removeChild(typingIndicator);
+                if (data.status === 'success') {
+                    const lines = data.response.split('\n');
+                    lines.forEach(line => {
+                        if (line.trim() !== '') {
+                            addMessage(line, 'bot');
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                chatMessages.removeChild(typingIndicator);
+                addMessage("Sorry, there was an error. Let's start over.", 'bot');
+                startConversation();
+            })
+            .finally(() => {
+                isWaitingForResponse = false;
+            });
+        }
+        
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerHTML = text.replace(/\n/g, '<br>');
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    </script>
+</body>
+</html>
