@@ -194,7 +194,10 @@ def recommend_meals(caloric_intake, disease_type, severity, diet_preference):
 # Flask routes
 @app.route('/')
 def home():
-    print("Rendering index.html")
+    return render_template('intro.html')
+
+@app.route('/form')
+def form():
     return render_template('index.html')
 
 @app.route('/recommend', methods=['POST'])
